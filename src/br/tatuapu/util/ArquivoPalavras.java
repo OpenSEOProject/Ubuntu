@@ -17,14 +17,14 @@ import java.util.ArrayList;
  * @author tatuapu
  */
 public class ArquivoPalavras {
-    
+    private static final String srcFile = Contexto.DATADIR+"palavrasAtivas.dat";
     /**
      * Trata das palavras para ação evasiva
      * @param palavras 
      */
     public static void salvaPalavras(ArrayList<String> palavras){
         try{
-            FileOutputStream arquivoGrav = new FileOutputStream("palavrasAtivas.dat");
+            FileOutputStream arquivoGrav = new FileOutputStream(srcFile);
             ObjectOutputStream objGravar = new ObjectOutputStream(arquivoGrav);
 
 	    //Grava o objeto mesas no arquivo
@@ -46,7 +46,7 @@ public class ArquivoPalavras {
      */
     public static void salvaPalavrasGoogle(ArrayList<String> palavras){
         try{
-            FileOutputStream arquivoGrav = new FileOutputStream("palavrasAtivasGoogle.dat");
+            FileOutputStream arquivoGrav = new FileOutputStream(srcFile);
             ObjectOutputStream objGravar = new ObjectOutputStream(arquivoGrav);
 
 	    //Grava o objeto palavras no arquivo

@@ -19,12 +19,13 @@ import java.util.ArrayList;
  * @author tatuapu
  */
 public class SitesDados {
+    private static final String srcFile = Contexto.DATADIR+"sitesAtivos.dat";
     public Integer contaSites(){
         return recuperaSitesAtivos().size();
     }
     public void salvaSitesAtivos(ArrayList<Site> sites){
         try{
-            FileOutputStream arquivoGrav = new FileOutputStream("sitesAtivos.dat");
+            FileOutputStream arquivoGrav = new FileOutputStream(srcFile);
             ObjectOutputStream objGravar = new ObjectOutputStream(arquivoGrav);
 
 	    //Grava o objeto sites no arquivo
@@ -42,12 +43,12 @@ public class SitesDados {
     public ArrayList<Site> recuperaSitesAtivos(){
         ArrayList<Site> comRecovered = null;
         try{
-            File arquivo = new File("sitesAtivos.dat");
+            File arquivo = new File(srcFile);
             if(!arquivo.exists()){
                 salvaSitesAtivos(new ArrayList<Site>());
             }    
             //Carrega o arquivo
-            FileInputStream arquivoLeitura = new FileInputStream("sitesAtivos.dat");
+            FileInputStream arquivoLeitura = new FileInputStream(srcFile);
 
             //Classe responsavel por recuperar os objetos do arquivo
             ObjectInputStream objLeitura = new ObjectInputStream(arquivoLeitura);

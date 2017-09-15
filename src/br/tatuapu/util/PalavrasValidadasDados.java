@@ -22,7 +22,7 @@ public class PalavrasValidadasDados {
     private final String srcFile;
     public PalavrasValidadasDados(Site site){
         this.site = site;
-        this.srcFile = "palavrasValidadasGoogle-"+this.site.getId()+".dat";
+        this.srcFile = Contexto.DATADIR+"palavrasValidadasGoogle-"+this.site.getId()+".dat";
     }
     public void salvaPalavrasAtivas(ArrayList<Palavra> pal){
         try{
