@@ -17,6 +17,9 @@ import org.openqa.selenium.WebElement;
 public class AcaoEvasivaAleatoria {
     private static List<String> palavrasIniciais;
     private static WebDriver driver;
+    public AcaoEvasivaAleatoria(){
+        palavrasIniciais = ArquivoPalavras.recuperaPalavras();
+    }
     public AcaoEvasivaAleatoria(WebDriver d) throws Exception{
         driver = d;
         //buscando uma lista pré-definida de palavras aleatórias para busca
@@ -26,7 +29,7 @@ public class AcaoEvasivaAleatoria {
         String pal = palavrasIniciais.get(chaveAleatoria);
         
         //dando um tempo pra despistar
-        aguarda(30000);
+        aguarda(20000);
         //abrindo um link qualquer da última busca realizada, caso haja
         if(Base.existsElement(driver, By.className("g"))){
             List<WebElement> linhas = driver.findElements(By.className("g"));
@@ -39,7 +42,7 @@ public class AcaoEvasivaAleatoria {
                             linhas2.get(0).click();
                             cont++;
                         }    
-                        aguarda(30000);
+                        aguarda(10000);
                         driver.navigate().back();
                         if(cont>=2) break;
                     } 
@@ -48,14 +51,6 @@ public class AcaoEvasivaAleatoria {
                 }    
             }        
                 
-//            for(WebElement e:linhas){
-//                if (Base.existsElement(e, By.className("_Rm"))){
-//                    WebElement link = e.findElement(By.className("_Rm"));
-//                    //e.findElement(By.className("_Rm")).click();
-//                    e.click();
-//                    //driver.get(link.getText());
-//                }
-//            }
         }
         
         driver.get("http://www.profvictorhugo.esy.es");        
@@ -64,7 +59,10 @@ public class AcaoEvasivaAleatoria {
         aguarda(1000);
         driver.get("https://www.google.com.br/search?q="+pal);
     }
-    private static void aguarda(int i){
+    private void setDriver(WebDriver d){
+        driver = d;
+    }
+    public static void aguarda(int i){
         //aguardando um tempo (i) antes de qualquer ação
         try{
             Thread.sleep(i);
@@ -78,7 +76,7 @@ public class AcaoEvasivaAleatoria {
      * @param driver: entrada o driver aberto do navegador em questão
      * @param i : inteiro do número de links para navegar neste site
      */
-    private void navegaEm(WebDriver driver, int vezes) {
+    public void navegaEm(WebDriver driver, int vezes) {
         List<WebElement> links;
         String[] seguir = new String[vezes];
         int contador = 0;
@@ -98,6 +96,7 @@ public class AcaoEvasivaAleatoria {
             for(int ii=0;ii<seguir.length;ii++){
                 driver.get(seguir[ii]);
                 aguarda(10000);
+                driver.navigate().back();
             }
         }            
     }

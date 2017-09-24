@@ -10,6 +10,7 @@ import br.tatuapu.model.Palavra;
 import br.tatuapu.model.Ranking;
 import br.tatuapu.model.Site;
 import br.tatuapu.model.TabelaSitesModel;
+import br.tatuapu.util.BotBuscador;
 import br.tatuapu.util.PageRankAnalytic;
 import br.tatuapu.util.PalavrasValidadasDados;
 import java.awt.event.ActionEvent;
@@ -25,6 +26,7 @@ import javax.swing.*;
  */
 public class PopupPrincipal extends JPopupMenu {
     JMenuItem miValidaPalavras;
+    JMenuItem miSearchBot;
     public PopupPrincipal(){
         this.miValidaPalavras =new JMenuItem("Valida palavras");
         add(miValidaPalavras);
@@ -37,6 +39,36 @@ public class PopupPrincipal extends JPopupMenu {
                 }
             }
         });
+        this.miSearchBot = new JMenuItem("Bot buscador");
+        add(miSearchBot);
+        this.miSearchBot.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                int opcao = JOptionPane.showConfirmDialog(null, "Deseja Realmente iniciar?");
+                if (opcao == 0 || opcao == -1) {
+                    iniciaBot();
+                }
+            }
+        });
+    }
+    private void iniciaBot(){
+        TelaPrincipal telaPrincipal = (TelaPrincipal) Executor.getTelaPrincipal();
+        int id = telaPrincipal.getTabela().getSelectedRow();
+        //garantindo que selecionou-se um item da tabela
+        if(id>=0){
+            TabelaSitesModel modelo = (TabelaSitesModel) telaPrincipal.getTabela().getModel();
+            Site site = modelo.getRowAt(id);
+            try{
+                new BotBuscador(site);
+            }catch(Exception e){
+                if(e.getMessage().equals("Sem palavras salvas")){
+                    JOptionPane.showMessageDialog(null,"Não existem palavras para processar");
+                }
+            }
+        }else{
+            JOptionPane.showMessageDialog(null,"Selecione um site da lista");
+        }  
+        
     }
     private void iniciaProcessamento(){
         TelaPrincipal telaPrincipal = (TelaPrincipal) Executor.getTelaPrincipal();

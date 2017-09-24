@@ -20,13 +20,15 @@ public class PageRankAnalytic {
     private static int contador;
     private static WebDriver driver;
     private static ArrayList<Palavra> listaPalavrasValidadas;
-    private static Site site;
+    static Site site;
+    private static ArrayList<Palavra> palavras;
+    private static int linhasLidas;
     
     public static ArrayList<Palavra> getPageRank(Site site) throws Exception{
         PageRankAnalytic.site = site;
         listaPalavrasValidadas = new ArrayList<Palavra>();
         PalavrasDados palavrasDados = new PalavrasDados(site);
-            ArrayList<Palavra> palavras = palavrasDados.recuperaPalavrasAtivas();
+            palavras = palavrasDados.recuperaPalavrasAtivas();
             if (palavras.size()<=0)
                 throw new Exception("Sem palavras salvas");
             else
@@ -58,9 +60,10 @@ public class PageRankAnalytic {
 
             int linha=1;
             for(WebElement e:linhas){
+                linhasLidas++;
                 if (existsElement(e)){
                     WebElement link = e.findElement(By.className("_Rm"));
-                    System.out.println("Procurando "+site.getMainDomain()+"em"
+                    System.out.println(linhasLidas+" de "+(palavras.size()*100)+" -Procurando "+site.getMainDomain()+" em"
                             + " "+link.getText());
                     if(link.getText().contains(site.getMainDomain())){
                         listaPalavrasValidadas.add(new Palavra(palavra.getPalavra(), pagina, linha));
