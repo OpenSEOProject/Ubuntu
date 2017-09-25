@@ -5,10 +5,13 @@
  */
 package br.tatuapu.util;
 
+import br.tatuapu.model.ArquivoPalavrasValidadas;
 import br.tatuapu.model.Palavra;
 import br.tatuapu.model.Site;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -29,15 +32,29 @@ public class BotBuscador {
     public BotBuscador(Site site) throws Exception {
         BotBuscador.site = site;
         acaoEvasiva = new AcaoEvasivaAleatoria();
-        navegaPelasPalavras();
         linhasLidas=0;
+        palavras = new ArrayList<Palavra>();
+        navegaPelasPalavras();        
     }
     
-    public static void navegaPelasPalavras() throws Exception{
-        
+    private static void getArquivos(){
+        ArquivoPalavrasValidadas[] a = EncontraArquivos.PegaArquivosDo(site);
+        for(ArquivoPalavrasValidadas s:a){
+            getPalavras(s.getId());
+        }
+    }
+    private static void getPalavras(char c){
+        PalavrasValidadasDados pvd = new PalavrasValidadasDados(site,c);
+        ArrayList<Palavra> plv = pvd.recuperaPalavrasAtivas();
+        for(Palavra p:plv){
+            if(!palavras.contains(p))
+                palavras.add(p);
+        }
+        Collections.shuffle(palavras, new Random(System.nanoTime()));
+    }
+    private static void navegaPelasPalavras() throws Exception{
+            getArquivos();
             
-            PalavrasValidadasDados pvd = new PalavrasValidadasDados(site);
-            palavras = pvd.recuperaPalavrasAtivas();
             if (palavras.size()<=0)
                 throw new Exception("Sem palavras salvas");
             else
@@ -83,8 +100,12 @@ public class BotBuscador {
                             href = e.findElement(By.tagName("a"));
                         if(href!=null)
                             href.click();
-                        acaoEvasiva.aguarda(30000);
-                        acaoEvasiva.navegaEm(driver, 1);
+                        try{
+                            acaoEvasiva.aguarda(30000);
+                            acaoEvasiva.navegaEm(driver, 1);
+                        }catch(Exception es){
+                            System.out.println(es.toString());
+                        }    
                         encontrou=true;
                         break;
                     }    

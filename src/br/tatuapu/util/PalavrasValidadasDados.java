@@ -20,9 +20,11 @@ import java.util.ArrayList;
 public class PalavrasValidadasDados {
     private final Site site;
     private final String srcFile;
-    public PalavrasValidadasDados(Site site){
+    private final char id;
+    public PalavrasValidadasDados(Site site, char id){
         this.site = site;
-        this.srcFile = Contexto.DATADIR+"palavrasValidadasGoogle-"+this.site.getId()+".dat";
+        this.id = id;
+        this.srcFile = Contexto.DATADIR+"palavrasValidadasGoogle-"+this.site.getId()+"-"+this.id+".dat";
     }
     public void salvaPalavrasAtivas(ArrayList<Palavra> pal){
         try{
@@ -45,17 +47,20 @@ public class PalavrasValidadasDados {
         ArrayList<Palavra> comRecovered = null;
         try{
             File arquivo = new File(this.srcFile);
-            if(!arquivo.exists()){
-                salvaPalavrasAtivas(new ArrayList<Palavra>());
-            }
-            //Carrega o arquivo
-            FileInputStream arquivoLeitura = new FileInputStream(this.srcFile);
+            if(arquivo.exists()){
+                //salvaPalavrasAtivas(new ArrayList<Palavra>());
+                //Carrega o arquivo
+                FileInputStream arquivoLeitura = new FileInputStream(this.srcFile);
 
-            //Classe responsavel por recuperar os objetos do arquivo
-            ObjectInputStream objLeitura = new ObjectInputStream(arquivoLeitura);
-            comRecovered = (ArrayList<Palavra>) objLeitura.readObject();
-            objLeitura.close();
-            arquivoLeitura.close();
+                //Classe responsavel por recuperar os objetos do arquivo
+                ObjectInputStream objLeitura = new ObjectInputStream(arquivoLeitura);
+                comRecovered = (ArrayList<Palavra>) objLeitura.readObject();
+                objLeitura.close();
+                arquivoLeitura.close();
+            }else{
+                comRecovered = new ArrayList<Palavra>();
+            }
+            
 	}catch(Exception e){
             e.printStackTrace();
 	}

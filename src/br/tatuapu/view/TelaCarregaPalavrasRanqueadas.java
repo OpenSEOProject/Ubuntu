@@ -44,7 +44,7 @@ public class TelaCarregaPalavrasRanqueadas  extends JFrame implements WindowFocu
         painel.add("Center",jtpTabs);
         
         setContentPane(painel);
-        addWindowFocusListener(this);
+        //addWindowFocusListener(this);
     }
 
     public void criaAbas(){

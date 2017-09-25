@@ -80,7 +80,7 @@ public class PopupPrincipal extends JPopupMenu {
             try{
                 ArrayList<Palavra> lista = PageRankAnalytic.getPageRank(site);
                 System.out.println(lista.size());
-                PalavrasValidadasDados pvd = new PalavrasValidadasDados(site);
+                PalavrasValidadasDados pvd = new PalavrasValidadasDados(site,'a');
                 pvd.salvaPalavrasAtivas(lista);
                 JOptionPane.showMessageDialog(null,"Palavras validadas com sucesso!");
             }catch(Exception e){
