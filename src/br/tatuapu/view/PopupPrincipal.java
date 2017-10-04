@@ -6,11 +6,13 @@
 package br.tatuapu.view;
 
 import br.tatuapu.controller.Executor;
+import br.tatuapu.model.ArquivoPalavrasValidadas;
 import br.tatuapu.model.Palavra;
 import br.tatuapu.model.Ranking;
 import br.tatuapu.model.Site;
 import br.tatuapu.model.TabelaSitesModel;
 import br.tatuapu.util.BotBuscador;
+import br.tatuapu.util.EncontraArquivos;
 import br.tatuapu.util.PageRankAnalytic;
 import br.tatuapu.util.PalavrasValidadasDados;
 import java.awt.event.ActionEvent;
@@ -59,7 +61,7 @@ public class PopupPrincipal extends JPopupMenu {
             TabelaSitesModel modelo = (TabelaSitesModel) telaPrincipal.getTabela().getModel();
             Site site = modelo.getRowAt(id);
             try{
-                new BotBuscador(site);
+                new BotBuscador(site,5);
             }catch(Exception e){
                 if(e.getMessage().equals("Sem palavras salvas")){
                     JOptionPane.showMessageDialog(null,"Não existem palavras para processar");
@@ -80,7 +82,11 @@ public class PopupPrincipal extends JPopupMenu {
             try{
                 ArrayList<Palavra> lista = PageRankAnalytic.getPageRank(site);
                 System.out.println(lista.size());
-                PalavrasValidadasDados pvd = new PalavrasValidadasDados(site,'a');
+                
+                ArquivoPalavrasValidadas[] a = EncontraArquivos.PegaArquivosDo(site);
+                char u = (a.length>0) ? (char) a.length : 'a';
+                
+                PalavrasValidadasDados pvd = new PalavrasValidadasDados(site,u);
                 pvd.salvaPalavrasAtivas(lista);
                 JOptionPane.showMessageDialog(null,"Palavras validadas com sucesso!");
             }catch(Exception e){

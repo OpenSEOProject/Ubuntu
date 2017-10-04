@@ -9,7 +9,13 @@ import br.tatuapu.model.ArquivoPalavrasValidadas;
 import br.tatuapu.model.Site;
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.text.SimpleDateFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
@@ -36,8 +42,15 @@ public class EncontraArquivos {
         File readedFiles[] = raiz.listFiles(textFilter);
         ArquivoPalavrasValidadas[] a = new ArquivoPalavrasValidadas[readedFiles.length];
 		for(File f: readedFiles) {
-                    
+                    FileTime dataCriada;                    
                     if(f.isFile()) {
+                        try {
+                            BasicFileAttributes attr = Files.readAttributes(f.toPath(), BasicFileAttributes.class);
+                            dataCriada = attr.creationTime();
+                        } catch (IOException ex) {
+                            Logger.getLogger(EncontraArquivos.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
                         //System.out.println(f.getName());  
                         java.util.Date alteradoDay = new java.util.Date(f.lastModified());
                         String alterado = new String(new SimpleDateFormat("dd-MM-yyyy").format(alteradoDay));

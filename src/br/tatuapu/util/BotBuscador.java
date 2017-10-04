@@ -28,13 +28,27 @@ public class BotBuscador {
     static Site site;
     private static AcaoEvasivaAleatoria acaoEvasiva;
     private static ArrayList<Palavra> palavras;
+    private static ArrayList<Palavra> palavrasEmbaralhadas;
+    private static int contaRodadas;
     
-    public BotBuscador(Site site) throws Exception {
+    public BotBuscador(Site site, int rodadas) throws Exception {
         BotBuscador.site = site;
+        contaRodadas = rodadas;
         acaoEvasiva = new AcaoEvasivaAleatoria();
         linhasLidas=0;
         palavras = new ArrayList<Palavra>();
-        navegaPelasPalavras();        
+        for(int i=0;i<rodadas;i++)
+            navegaPelasPalavras();        
+    }
+    
+    private static void setaPalavrasAleatorias(int tamanho){
+        ArrayList<Palavra> p2;
+        p2 = palavras;
+        Collections.shuffle(p2);//embaralhando
+        palavrasEmbaralhadas = new ArrayList<>();
+        for(int i=0;i<tamanho;i++){
+            palavrasEmbaralhadas.add(p2.get(i));
+        }
     }
     
     private static void getArquivos(){
@@ -54,13 +68,15 @@ public class BotBuscador {
     }
     private static void navegaPelasPalavras() throws Exception{
             getArquivos();
+
+            setaPalavrasAleatorias(10);
             
-            if (palavras.size()<=0)
+            if (palavrasEmbaralhadas.size()<=0)
                 throw new Exception("Sem palavras salvas");
             else
-                for(int i=0;i<palavras.size();i++){//varrendo as palavras salvas
+                for(int i=0;i<palavrasEmbaralhadas.size();i++){//varrendo as palavras salvas
                     //modelo.addRow(palavras.get(i));     
-                    navegaPalavra(palavras.get(i),i);
+                    navegaPalavra(palavrasEmbaralhadas.get(i),i);
                 }
             driver.quit();
             
@@ -90,7 +106,7 @@ public class BotBuscador {
                 linhasLidas++;
                 if (Base.existsElement(e,By.className("_Rm"))){
                     WebElement link = e.findElement(By.className("_Rm"));
-                    System.out.println(linhasLidas+": "+(indice+1)+ " de "+palavras.size()+" -Procurando "+site.getMainDomain()+" em"
+                    System.out.println(linhasLidas+": "+(indice+1)+ " de "+(palavrasEmbaralhadas.size()*contaRodadas)+" -Procurando "+site.getMainDomain()+" em"
                             + " "+link.getText());
                     
                     if(link.getText().contains(site.getMainDomain())){

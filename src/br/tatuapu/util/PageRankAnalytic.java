@@ -36,6 +36,8 @@ public class PageRankAnalytic {
                     //modelo.addRow(palavras.get(i));     
                     procuraPalavra(palavras.get(i));
                 }
+            if(driver!=null)
+                driver.quit();
         return listaPalavrasValidadas;
     }
 
