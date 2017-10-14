@@ -79,6 +79,8 @@ public class BotBuscador {
                     navegaPalavra(palavrasEmbaralhadas.get(i),i);
                 }
             driver.quit();
+            driver.close();
+            driver = null;
             
     }
 

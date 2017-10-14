@@ -21,8 +21,10 @@ public class CarregadorDadosSearchConsole {
     private static WebDriver driver;
     private ArrayList<String> listaPalavras;
     private final Site site;
+    private ArrayList<Integer> listaIdsPalavras;
     
     public CarregadorDadosSearchConsole(Site site){
+        listaIdsPalavras = new ArrayList();
         this.site = site;
         String os = System.getProperty("os.name");
         if(os.toLowerCase().contains("windows"))
@@ -39,6 +41,7 @@ public class CarregadorDadosSearchConsole {
      * para otimização
      */
     public ArrayList<String> capturaPalavras(){
+        
         driver = new FirefoxDriver();
         driver.get("https://www.google.com/webmasters/tools/search-analytics?hl=pt-BR&authuser=0&siteUrl="+site.getUrlSearchConsole());
         System.out.println(driver.getTitle());
@@ -60,32 +63,58 @@ public class CarregadorDadosSearchConsole {
         driver.findElement(By.className("O0WRkf")).click();
         //WebElement btn = driver.findElement(By.id("searchsubmit"));
         //btn.click();
+        listaPalavras = new ArrayList<>();
         try{
             Thread.sleep(10000);
+            
+        
+            //wait.until(ExpectedConditions.presenceOfElementLocated(By.className("product-name-logo")));
+            String title = "search console - search analytics";
+
+            if(driver.getTitle().toLowerCase().contains(title)){
+                //entramos
+                System.out.println("entramos");
+                WebDriverWait wait = new WebDriverWait(driver, 15);  // timeout em segundos
+                wait.until(ExpectedConditions.presenceOfElementLocated(By.className("wmt-jstable-row")));
+                
+                for(int ii=0;ii<10000;ii++){
+                    List<WebElement> linhas = driver.findElements(By.className("wmt-jstable-row"));
+                    List<WebElement> linhas2 = driver.findElements(By.className("wmt-jstable-row-odd"));
+                    linhas.addAll(linhas2);
+                    System.out.println(linhas.size());
+                    
+                    for(WebElement e: linhas){
+                        Integer id = Integer.parseInt(e.findElements(By.cssSelector("td")).get(0).getText());
+                        
+                        if(!listaIdsPalavras.contains(id)){
+                            listaIdsPalavras.add(id);
+                            String span = e.findElement(By.cssSelector("span")).getText();
+                            System.out.println(span);
+                            listaPalavras.add(span); 
+                        }else{
+                            driver.quit();
+                            driver = null;
+                            return listaPalavras;
+                        }                        
+                       
+                    }
+                    if(Base.existsElement(driver, By.className("jfk-button-collapse-left"))){
+                        WebElement ee = driver.findElement(By.className("jfk-button-collapse-left"));
+                        
+                        driver.findElement(By.className("jfk-button-collapse-left")).click();
+                        Thread.sleep(10000);
+                           
+                    }else{
+                        break;
+                    }    
+                }                
+            }
+            driver.quit();
+            driver = null;
+            
         } catch (InterruptedException ex) {
             Logger.getLogger(CarregadorDadosSearchConsole.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //wait.until(ExpectedConditions.presenceOfElementLocated(By.className("product-name-logo")));
-        String title = "search console - search analytics";
-       
-        if(driver.getTitle().toLowerCase().contains(title)){
-            //entramos
-            System.out.println("entramos");
-            WebDriverWait wait = new WebDriverWait(driver, 15);  // timeout em segundos
-            wait.until(ExpectedConditions.presenceOfElementLocated(By.className("wmt-jstable-row")));
-
-            List<WebElement> linhas = driver.findElements(By.className("wmt-jstable-row"));
-            List<WebElement> linhas2 = driver.findElements(By.className("wmt-jstable-row-odd"));
-            linhas.addAll(linhas2);
-            System.out.println(linhas.size());
-            listaPalavras = new ArrayList<>();
-            for(WebElement e: linhas){
-                String span = e.findElement(By.cssSelector("span")).getText();
-                System.out.println(span);
-                listaPalavras.add(span);                
-            }
-        }
-        driver.quit();
         return listaPalavras;
     }
     

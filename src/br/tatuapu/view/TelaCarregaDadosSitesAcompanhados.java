@@ -65,7 +65,7 @@ public class TelaCarregaDadosSitesAcompanhados extends JFrame implements WindowF
     
     @Override
     public void windowGainedFocus(WindowEvent we) {
-        criaAbas();
+        //criaAbas();
     }
 
     @Override
