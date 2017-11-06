@@ -18,11 +18,14 @@ import java.util.ArrayList;
  * @author tatuapu
  */
 public class PalavrasDados {
+    
     private final Site site;
     private final String srcFile;
+   
     public PalavrasDados(Site site){
         this.site = site;
         this.srcFile = Contexto.DATADIR+"palavrasAtivasGoogle-"+this.site.getId()+".dat";
+        
     }
     public void salvaPalavrasAtivas(ArrayList<Palavra> pal){
         try{
@@ -61,4 +64,5 @@ public class PalavrasDados {
 	}
         return comRecovered;
     }
+    
 }

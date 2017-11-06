@@ -21,6 +21,7 @@ public class AcaoEvasivaAleatoria {
         palavrasIniciais = ArquivoPalavras.recuperaPalavras();
     }
     public AcaoEvasivaAleatoria(WebDriver d) throws Exception{
+        Random gerador = new Random();
         driver = d;
         //buscando uma lista pré-definida de palavras aleatórias para busca
         palavrasIniciais = ArquivoPalavras.recuperaPalavras();
@@ -29,7 +30,9 @@ public class AcaoEvasivaAleatoria {
         String pal = palavrasIniciais.get(chaveAleatoria);
         
         //dando um tempo pra despistar
-        aguarda(20000);
+        aguarda(gerador.nextInt(10000));
+        //guardando o link anterior
+        String linkAtual = driver.getCurrentUrl();
         //abrindo um link qualquer da última busca realizada, caso haja
         if(Base.existsElement(driver, By.className("g"))){
             List<WebElement> linhas = driver.findElements(By.className("g"));
@@ -42,8 +45,13 @@ public class AcaoEvasivaAleatoria {
                             linhas2.get(0).click();
                             cont++;
                         }    
-                        aguarda(10000);
-                        driver.navigate().back();
+                        aguarda(gerador.nextInt(10000));
+                        try{
+                            driver.navigate().back();
+                        }catch(Exception e){
+                            driver.get(linkAtual);
+                            System.out.println("Não pode voltar - "+e.getMessage());
+                        }    
                         if(cont>=2) break;
                     } 
                 }catch(Exception e){
@@ -54,9 +62,9 @@ public class AcaoEvasivaAleatoria {
         }
         
         driver.get("http://www.profvictorhugo.esy.es");        
-        aguarda(10000);
-        navegaEm(driver,3);
-        aguarda(1000);
+        aguarda(gerador.nextInt(10000));
+        navegaEm(driver,2);
+        aguarda(1800);
         driver.get("https://www.google.com.br/search?q="+pal);
     }
     private void setDriver(WebDriver d){
@@ -65,7 +73,9 @@ public class AcaoEvasivaAleatoria {
     public static void aguarda(int i){
         //aguardando um tempo (i) antes de qualquer ação
         try{
+            System.out.print("Hibernado "+i/1000+" segundos ");
             Thread.sleep(i);
+            System.out.println("--Acordou");
         } catch (InterruptedException ex) {
             Logger.getLogger(AcaoEvasivaAleatoria.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -96,7 +106,11 @@ public class AcaoEvasivaAleatoria {
             for(int ii=0;ii<seguir.length;ii++){
                 driver.get(seguir[ii]);
                 aguarda(10000);
-                driver.navigate().back();
+                try{
+                    driver.navigate().back();
+                }catch(Exception e){
+                    System.out.println("Não pode voltar - "+e.getMessage());
+                }   
             }
         }            
     }

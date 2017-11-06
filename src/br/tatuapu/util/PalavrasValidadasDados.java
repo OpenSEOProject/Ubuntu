@@ -21,10 +21,13 @@ public class PalavrasValidadasDados {
     private final Site site;
     private final String srcFile;
     private final char id;
+     private final String srcFileTemp;
+     
     public PalavrasValidadasDados(Site site, char id){
         this.site = site;
         this.id = id;
         this.srcFile = Contexto.DATADIR+"palavrasValidadasGoogle-"+this.site.getId()+"-"+this.id+".dat";
+        this.srcFileTemp = Contexto.DATADIR+"palavrasValidadasGoogleTemp-"+this.site.getId()+".dat";
     }
     public void salvaPalavrasAtivas(ArrayList<Palavra> pal){
         try{
@@ -65,5 +68,48 @@ public class PalavrasValidadasDados {
             e.printStackTrace();
 	}
         return comRecovered;
+    }
+    public void salvaTemporario(ArrayList<Palavra> listaPalavrasValidadas) {
+        try{
+            FileOutputStream arquivoGrav = new FileOutputStream(this.srcFileTemp);
+            ObjectOutputStream objGravar = new ObjectOutputStream(arquivoGrav);
+
+	    //Grava o objeto listaPalavrasValidadas no arquivo
+	    objGravar.writeObject(listaPalavrasValidadas);
+	    objGravar.flush();
+
+	    objGravar.close();
+	    arquivoGrav.flush();
+
+	    arquivoGrav.close();
+	}catch(Exception e){
+            e.printStackTrace();
+	}
+    }
+    public ArrayList<Palavra> recuperaPalavrasTemp(){        
+        ArrayList<Palavra> comRecovered = null;
+        try{
+            File arquivo = new File(this.srcFileTemp);
+            if(arquivo.exists()){
+                //salvaTemporario(new ArrayList<Palavra>());
+                //Carrega o arquivo
+                FileInputStream arquivoLeitura = new FileInputStream(this.srcFileTemp);
+
+                //Classe responsavel por recuperar os objetos do arquivo
+                ObjectInputStream objLeitura = new ObjectInputStream(arquivoLeitura);
+                comRecovered = (ArrayList<Palavra>) objLeitura.readObject();
+                objLeitura.close();
+                arquivoLeitura.close();
+            }else{
+                comRecovered = new ArrayList<Palavra>();
+            }
+            
+	}catch(Exception e){
+            e.printStackTrace();
+	}
+        return comRecovered;
+    }
+    public void zeraArquivoTemporario(){
+        salvaTemporario(new ArrayList<Palavra>());
     }
 }

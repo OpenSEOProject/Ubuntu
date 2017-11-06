@@ -30,6 +30,8 @@ import javax.swing.*;
 public class PopupPrincipal extends JPopupMenu {
     JMenuItem miValidaPalavras;
     JMenuItem miSearchBot;
+    JMenuItem miSearchBotZoombie;
+    
     public PopupPrincipal(){
         this.miValidaPalavras =new JMenuItem("Valida palavras");
         add(miValidaPalavras);
@@ -53,6 +55,8 @@ public class PopupPrincipal extends JPopupMenu {
                 }
             }
         });
+        this.miSearchBotZoombie = new JMenuItem("Bot zumbi");
+        add(miSearchBotZoombie);
     }
     private void iniciaBot(){
         TelaPrincipal telaPrincipal = (TelaPrincipal) Executor.getTelaPrincipal();

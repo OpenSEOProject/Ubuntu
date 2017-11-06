@@ -79,7 +79,6 @@ public class BotBuscador {
                     navegaPalavra(palavrasEmbaralhadas.get(i),i);
                 }
             driver.quit();
-            driver.close();
             driver = null;
             
     }
@@ -88,6 +87,7 @@ public class BotBuscador {
         int pagina=1;
         int paginador=0;
         boolean encontrou;
+        Random gerador = new Random();
         if(driver==null)
             driver = new FirefoxDriver();
         
@@ -96,7 +96,7 @@ public class BotBuscador {
             contador++;
             //após 10 interações com o google (busca/listagem de página), vamos a uma ação
             //para despistar!
-            if(contador>20){                
+            if(contador>10){                
                 acaoEvasiva();
                 contador=0;
             }    
@@ -119,10 +119,11 @@ public class BotBuscador {
                         if(href!=null)
                             href.click();
                         try{
-                            acaoEvasiva.aguarda(30000);
+                            //aguardando no site por um tempo aleatório máximo 30000 ms
+                            acaoEvasiva.aguarda(gerador.nextInt(30000));
                             acaoEvasiva.navegaEm(driver, 1);
                         }catch(Exception es){
-                            System.out.println(es.toString());
+                            System.out.println("Exception capturada -"+es.toString());
                         }    
                         encontrou=true;
                         break;
